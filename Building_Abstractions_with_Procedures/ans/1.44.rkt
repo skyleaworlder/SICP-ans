@@ -1,0 +1,21 @@
+#lang racket
+
+(define (smooth f x)
+    (define dx 0.00001)
+    (define (average-3 a b c)
+        (/ (+ a b c) 3))
+    (lambda (x)
+        (average-3  (f (- x dx))
+                    (f x)
+                    (f (+ x dx)))
+    )
+)
+
+(define (multi-smooth n)
+    (define (compose f g)
+        (lambda (x) (f (g x))))
+    (define (repeat-c f n)
+        (cond   ((= n 1)    f)
+                (else       (compose f (repeat-c f (- n 1))))))
+    (repeat-c smooth n)
+)
